@@ -1,0 +1,113 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Form, Field, withFormik } from 'formik';
+import * as Yup from 'yup';
+import "../index.css";
+
+const NewUserForm = ({ errors, touched, values, status }) => {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        if (status) {
+            setUsers([...users, status]); // array to match useState above -- if there is a post submitted, set to state
+        }
+    }, [status]); // only fire the effect when receiving an input or "status update"
+
+    return (
+        <div className="new-user-form">
+            <h1>New User Form</h1>
+            <Form>
+                <Field type="text" name="name" placeholder="Name" className="input"/>
+                {touched.name && errors.name && (
+                    <p className="error">{errors.name}</p>
+                )}
+
+                <Field type="email" name="email" placeholder="Email" className="input"/>
+                {touched.email && errors.email && (
+                    <p className="error">{errors.email}</p>
+                )}
+
+                <Field type="password" name="password" placeholder="Password" className="input"/>
+                {touched.password && errors.password && (
+                    <p className="error">{errors.password}</p>
+                )}
+
+                <label className="checkbox-container">
+                    <p className="tos-text">Terms of Service (Click Below to Sell Your Soul)</p>
+                    <Field type="checkbox" name="tos" checked={values.tos} className="input" />
+                </label>
+
+                <Field component="select" className="animal-select" name="animal" className="input">
+                    <option>Please select your favorite animal.</option>
+                    <option value="dog">Dog</option>
+                    <option value="cat">Cat</option>
+                    <option value="fish">Fish</option>
+                    <option value="gerbil">Gerbil</option>
+                </Field>
+
+                <Field component="textarea" type="text" name="quote" placeholder="Name one of your favorite quotes" className="input quote-box"/>
+                {touched.quote && errors.quote && (
+                    <p className="error">{errors.quote}</p>
+                )}
+
+                <button type="submit" className="input">Submit!</button>
+            </Form>
+
+            {users.map(user => (
+                <ul key={user.id}>
+                    <li>Name: {user.name}</li>
+                    <li>Email: {user.email}</li>
+                    <li>Password: {user.password}</li>
+                    <li>Favorite animal: {user.animal}</li>
+                    <li>Favorite quote: {user.quote}</li>
+                </ul>
+            ))}
+        </div>
+    );
+};
+
+const FormikUserForm = withFormik({
+    mapPropsToValues({ name, email, password, tos, animal, quote }) {
+        return {
+            name: name || "",
+            email: email || "",
+            password: password || "",
+            animal: animal || "",
+            quote: quote || "",
+            tos: tos || false
+        };
+    },
+
+    validationSchema: Yup.object().shape({
+        name: 
+            Yup.string()
+            .required("Gimee your name, fool!")
+            .min(2, "Your name isn't really Q... be honest!")
+            .max(50, "I know you're just pushing random keys now..."),
+
+        email: 
+            Yup.string()
+            .required("How am I supposed to contact you, silly?")
+            .min(5, "There are 5 letters in GMAIL so that can't be right..."),
+
+        password: 
+            Yup.string()
+            .required("No password, no deal!")
+            .min(4, "Three letters? Really? Are you *begging* to get hacked?"),
+
+        quote: 
+            Yup.string()
+            .max(100, "I asked for your favorite quote, not for the full text of your favorite novel...")
+    }),
+
+    handleSubmit(values, { setStatus }) {
+        axios
+            .post('https://reqres.in/api/users', values)
+            .then(res => {
+                setStatus(res.data);
+            })
+            .catch(err => console.log(err.response))
+    }
+})(NewUserForm);
+
+export default FormikUserForm;
