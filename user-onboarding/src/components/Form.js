@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Field, withFormik } from 'formik';
 import * as Yup from 'yup';
+import "../index.css";
 
 const NewUserForm = ({ errors, touched, values, status }) => {
     const [users, setUsers] = useState([]);
@@ -16,27 +17,27 @@ const NewUserForm = ({ errors, touched, values, status }) => {
         <div className="new-user-form">
             <h1>New User Form</h1>
             <Form>
-                <Field type="text" name="name" placeholder="Name" />
+                <Field type="text" name="name" placeholder="Name" className="input"/>
                 {touched.name && errors.name && (
                     <p className="error">{errors.name}</p>
                 )}
 
-                <Field type="email" name="email" placeholder="Email" />
+                <Field type="email" name="email" placeholder="Email" className="input"/>
                 {touched.email && errors.email && (
                     <p className="error">{errors.email}</p>
                 )}
 
-                <Field type="password" name="password" placeholder="Password" />
+                <Field type="password" name="password" placeholder="Password" className="input"/>
                 {touched.password && errors.password && (
                     <p className="error">{errors.password}</p>
                 )}
 
                 <label className="checkbox-container">
-                    Terms of Service
-                    <Field type="checkbox" name="tos" checked={values.tos} />
+                    <p className="tos-text">Terms of Service (Click Below to Sell Your Soul)</p>
+                    <Field type="checkbox" name="tos" checked={values.tos} className="input" />
                 </label>
 
-                <Field component="select" className="animal-select" name="animal">
+                <Field component="select" className="animal-select" name="animal" className="input">
                     <option>Please select your favorite animal.</option>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
@@ -44,12 +45,12 @@ const NewUserForm = ({ errors, touched, values, status }) => {
                     <option value="gerbil">Gerbil</option>
                 </Field>
 
-                <Field component="textarea" type="text" name="quote" placeholder="Name one of your favorite quotes" />
+                <Field component="textarea" type="text" name="quote" placeholder="Name one of your favorite quotes" className="input quote-box"/>
                 {touched.quote && errors.quote && (
                     <p className="error">{errors.quote}</p>
                 )}
 
-                <button type="submit">Submit!</button>
+                <button type="submit" className="input">Submit!</button>
             </Form>
 
             {users.map(user => (
