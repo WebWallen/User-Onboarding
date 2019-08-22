@@ -36,6 +36,19 @@ const NewUserForm = ({ errors, touched, values, status }) => {
                     <Field type="checkbox" name="tos" checked={values.tos} />
                 </label>
 
+                <Field component="select" className="animal-select" name="animal">
+                    <option>Please select your favorite animal.</option>
+                    <option value="dog">Dog</option>
+                    <option value="cat">Cat</option>
+                    <option value="fish">Fish</option>
+                    <option value="gerbil">Gerbil</option>
+                </Field>
+
+                <Field component="textarea" type="text" name="quote" placeholder="Name one of your favorite quotes" />
+                {touched.quote && errors.quote && (
+                    <p className="error">{errors.quote}</p>
+                )}
+
                 <button type="submit">Submit!</button>
             </Form>
 
@@ -44,6 +57,8 @@ const NewUserForm = ({ errors, touched, values, status }) => {
                     <li>Name: {user.name}</li>
                     <li>Email: {user.email}</li>
                     <li>Password: {user.password}</li>
+                    <li>Favorite animal: {user.animal}</li>
+                    <li>Favorite quote: {user.quote}</li>
                 </ul>
             ))}
         </div>
@@ -51,11 +66,13 @@ const NewUserForm = ({ errors, touched, values, status }) => {
 };
 
 const FormikUserForm = withFormik({
-    mapPropsToValues({ name, email, password, tos }) {
+    mapPropsToValues({ name, email, password, tos, animal, quote }) {
         return {
             name: name || "",
             email: email || "",
             password: password || "",
+            animal: animal || "",
+            quote: quote || "",
             tos: tos || false
         };
     },
@@ -75,7 +92,11 @@ const FormikUserForm = withFormik({
         password: 
             Yup.string()
             .required("No password, no deal!")
-            .min(4, "Three letters? Really? Are you *begging* to get hacked?")
+            .min(4, "Three letters? Really? Are you *begging* to get hacked?"),
+
+        quote: 
+            Yup.string()
+            .max(100, "I asked for your favorite quote, not for the full text of your favorite novel...")
     }),
 
     handleSubmit(values, { setStatus }) {
