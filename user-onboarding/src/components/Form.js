@@ -61,9 +61,21 @@ const FormikUserForm = withFormik({
     },
 
     validationSchema: Yup.object().shape({
-        name: Yup.string().required("Gimee your name, fool!"),
-        email: Yup.string().required("How am I supposed to contact you, silly?"),
-        password: Yup.string().required("No password, no account!")
+        name: 
+            Yup.string()
+            .required("Gimee your name, fool!")
+            .min(2, "Your name isn't really Q... be honest!")
+            .max(50, "I know you're just pushing random keys now..."),
+
+        email: 
+            Yup.string()
+            .required("How am I supposed to contact you, silly?")
+            .min(5, "There are 5 letters in GMAIL so that can't be right..."),
+
+        password: 
+            Yup.string()
+            .required("No password, no deal!")
+            .min(4, "Three letters? Really? Are you *begging* to get hacked?")
     }),
 
     handleSubmit(values, { setStatus }) {
